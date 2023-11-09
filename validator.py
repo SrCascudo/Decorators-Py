@@ -13,7 +13,7 @@ def throw_error(msg):
     logging.error(Fore.RED + ' ' + msg + Fore.RESET)
 
 def text(max: int = 255, min: int = 0) -> object:
-    """Determina o tamanho máximo e mínimo da str de entrada de uma função."""
+    """Determina o tamanho máximo e mínimo de um objeto str()."""
     def execute(func: object) -> object:
         @wraps(func)
         def call(*args) -> object:
@@ -50,3 +50,36 @@ def text(max: int = 255, min: int = 0) -> object:
             return
         return call
     return execute 
+
+def integer(len: int = 10) -> object:
+    """Determina o quantos numeros um objeto int() deve possuir."""
+    def execute(func: object) -> object:
+        @wraps(func)
+        def call(*args) -> object:
+            try:
+                
+                param = args[0] if func.__name__ == func.__qualname__ else args[1]
+
+                if not isinstance(len, int) or isinstance(len, bool):
+                    raise TypeError(1)
+                
+                if not isinstance(param, int):
+                    raise TypeError(2)
+
+                if str(param).__len__() > len:
+                    raise ValueError
+                
+                return func(*args)
+        
+            except TypeError as e:
+                if e.args[0] == 1:
+                    throw_error(f'A função {func.__name__}() está utilizando o decorator @integer e informando um tipo diferente de int():\nlen: {type(len)}')
+                if e.args[0] == 2:
+                    throw_error(f'Não é possível atribuir {type(param)} para {func.__name__}()')
+
+            except ValueError as e:
+                throw_error(f'A função {func.__name__}() suporta um número de no máximo {len} caracteres, e você está informando {str(param).__len__()}.')
+            
+            return
+        return call
+    return execute
