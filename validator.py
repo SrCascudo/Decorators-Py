@@ -51,7 +51,7 @@ def text(max: int = 255, min: int = 0) -> object:
         return call
     return execute 
 
-def integer(len: int = 10) -> object:
+def integer(len: int = 20) -> object:
     """Determina o quantos numeros um objeto int() deve possuir."""
     def execute(func: object) -> object:
         @wraps(func)
